@@ -1,6 +1,11 @@
 (() => {
   "use strict";
 
+  if (globalThis.__blSearchContentLoaded) {
+    return;
+  }
+  globalThis.__blSearchContentLoaded = true;
+
   const STORAGE_KEY = BLSearchStorage.BLOCKED_KEY;
   const PROCESSED_ATTRIBUTE = "data-bl-search-processed";
   const JOB_LINK_SELECTOR = 'a[href*="/jobs/view/"]';
@@ -12,10 +17,30 @@
   ];
 
   let blockedCompanies = new Map();
+  let observer = null;
+  let processingTimerID = null;
+  let routeMonitorID = null;
   let scheduled = false;
+  let lastPathname = location.pathname;
+
+  function handleProcessingError(error) {
+    if (error?.message?.includes("Extension context invalidated")) {
+      observer?.disconnect();
+      if (routeMonitorID !== null) {
+        window.clearInterval(routeMonitorID);
+      }
+      scheduled = false;
+      processingTimerID = null;
+      return;
+    }
+    console.error("BL Search failed to process job cards", error);
+  }
 
   function isJobsPage() {
-    return location.pathname === "/jobs" || location.pathname.startsWith("/jobs/");
+    return location.pathname === "/jobs" ||
+      location.pathname.startsWith("/jobs/") ||
+      location.pathname === "/preload" ||
+      location.pathname.startsWith("/preload/");
   }
 
   function normalize(value) {
@@ -139,9 +164,15 @@
       [primary, ...duplicates].map((posting) => posting.location).filter(Boolean)
     )];
     const locationText = locations.length ? ` · ${locations.join(" · ")}` : "";
-    summary.textContent = `${duplicates.length + 1} similar postings${locationText}`;
-    summary.title =
+    const text = `${duplicates.length + 1} similar postings${locationText}`;
+    const title =
       "Grouped locally by normalized company and title. Open options to disable grouping.";
+    if (summary.textContent !== text) {
+      summary.textContent = text;
+    }
+    if (summary.title !== title) {
+      summary.title = title;
+    }
   }
 
   function showToast(message) {
@@ -155,6 +186,7 @@
 
   async function processCards(force = false) {
     scheduled = false;
+    processingTimerID = null;
 
     if (!isJobsPage()) {
       return;
@@ -232,8 +264,13 @@
     if (scheduled && !force) {
       return;
     }
+    if (processingTimerID !== null) {
+      window.clearTimeout(processingTimerID);
+    }
     scheduled = true;
-    window.setTimeout(() => processCards(force), 150);
+    processingTimerID = window.setTimeout(() => {
+      processCards(force).catch(handleProcessingError);
+    }, 150);
   }
 
   async function initialize() {
@@ -247,8 +284,28 @@
     // LinkedIn navigates between sections without loading a new document. The
     // observer stays active outside /jobs so it can catch the first DOM update
     // after an SPA transition into the jobs section.
-    const observer = new MutationObserver(() => scheduleProcessing());
+    observer = new MutationObserver((mutations) => {
+      const hasPageMutation = mutations.some(({ target }) =>
+        !target.parentElement?.closest(
+          ".bl-search-controls, .bl-search-toast"
+        )
+      );
+      if (hasPageMutation) {
+        scheduleProcessing();
+      }
+    });
     observer.observe(document.body, { childList: true, subtree: true });
+
+    // A LinkedIn route change can happen after its final DOM mutation. Polling
+    // the lightweight pathname value makes route detection independent of the
+    // page framework and does not touch page content outside /jobs.
+    routeMonitorID = window.setInterval(() => {
+      if (location.pathname === lastPathname) {
+        return;
+      }
+      lastPathname = location.pathname;
+      scheduleProcessing(true);
+    }, 250);
 
     chrome.storage.onChanged.addListener((changes, areaName) => {
       if (areaName !== "local") {
@@ -265,7 +322,5 @@
     scheduleProcessing(true);
   }
 
-  initialize().catch((error) => {
-    console.error("BL Search failed to initialize", error);
-  });
+  initialize().catch(handleProcessingError);
 })();

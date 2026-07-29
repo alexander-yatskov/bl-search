@@ -83,6 +83,14 @@ Stores the user's company blocklist, removal timestamps, duplicate-grouping
 preference, and optional encrypted-sync configuration in extension storage.
 ```
 
+### `scripting`
+
+```text
+Initializes BL Search in LinkedIn tabs that were already open when the extension
+was installed or updated. Scripts and styles are injected only into matching
+LinkedIn tabs; job-card content is processed only within the /jobs/ section.
+```
+
 ### `https://www.linkedin.com/*`
 
 ```text

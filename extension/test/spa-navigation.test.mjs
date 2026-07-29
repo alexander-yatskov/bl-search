@@ -8,8 +8,9 @@ const contentScript = await readFile(
   "utf8"
 );
 
-test("processes jobs after an SPA transition from another LinkedIn page", async () => {
+test("processes jobs rendered in LinkedIn's SPA preload document", async () => {
   let mutationCallback;
+  let intervalCallback;
   let queryCount = 0;
   const location = {
     origin: "https://www.linkedin.com",
@@ -52,6 +53,11 @@ test("processes jobs after an SPA transition from another LinkedIn page", async 
     location,
     URL,
     window: {
+      clearInterval() {},
+      clearTimeout,
+      setInterval(callback) {
+        intervalCallback = callback;
+      },
       setTimeout
     }
   };
@@ -60,9 +66,10 @@ test("processes jobs after an SPA transition from another LinkedIn page", async 
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(queryCount, 0);
 
-  location.pathname = "/jobs/search/";
-  mutationCallback();
+  location.pathname = "/preload/";
+  intervalCallback();
   await new Promise((resolve) => setTimeout(resolve, 200));
 
   assert.equal(queryCount, 1);
+  assert.equal(typeof mutationCallback, "function");
 });
