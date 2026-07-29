@@ -14,6 +14,10 @@
   let blockedCompanies = new Map();
   let scheduled = false;
 
+  function isJobsPage() {
+    return location.pathname === "/jobs" || location.pathname.startsWith("/jobs/");
+  }
+
   function normalize(value) {
     return (value || "")
       .normalize("NFKC")
@@ -152,6 +156,10 @@
   async function processCards(force = false) {
     scheduled = false;
 
+    if (!isJobsPage()) {
+      return;
+    }
+
     const { dedupEnabled = true } = await chrome.storage.local.get({
       dedupEnabled: true
     });
@@ -218,6 +226,9 @@
   }
 
   function scheduleProcessing(force = false) {
+    if (!isJobsPage()) {
+      return;
+    }
     if (scheduled && !force) {
       return;
     }
@@ -233,6 +244,9 @@
     });
     blockedCompanies = new Map(Object.entries(stored[STORAGE_KEY]));
 
+    // LinkedIn navigates between sections without loading a new document. The
+    // observer stays active outside /jobs so it can catch the first DOM update
+    // after an SPA transition into the jobs section.
     const observer = new MutationObserver(() => scheduleProcessing());
     observer.observe(document.body, { childList: true, subtree: true });
 

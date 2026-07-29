@@ -83,13 +83,16 @@ Stores the user's company blocklist, removal timestamps, duplicate-grouping
 preference, and optional encrypted-sync configuration in extension storage.
 ```
 
-### `https://www.linkedin.com/jobs/*`
+### `https://www.linkedin.com/*`
 
 ```text
-Required to read and update job cards displayed on LinkedIn Jobs pages. The
-extension extracts company name, job title, location, job URL, and job ID to
-apply the blocklist and group similar cards. This content is processed locally
-and is not sent to the BL Search service.
+Required to detect client-side navigation into LinkedIn Jobs and to read and
+update job cards displayed there. LinkedIn uses SPA navigation, so the content
+script must be present before the URL changes to /jobs/; it does not process
+page content outside that section. The extension extracts company name, job
+title, location, job URL, and job ID to apply the blocklist and group similar
+cards. This content is processed locally and is not sent to the BL Search
+service.
 ```
 
 ### Optional BL Search API host
