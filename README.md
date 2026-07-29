@@ -17,53 +17,45 @@ available in the Chrome Web Store.
 
 ### Install the local beta
 
-#### Option 1: Clone with Git
+#### Recommended: install from GitHub Releases
+
+1. Open the
+   [BL Search v0.3.0 release](https://github.com/alexander-yatskov/bl-search/releases/tag/v0.3.0).
+2. Download
+   [`bl-search-extension-v0.3.0.zip`](https://github.com/alexander-yatskov/bl-search/releases/download/v0.3.0/bl-search-extension-v0.3.0.zip)
+   from **Assets**.
+3. Extract the ZIP into a permanent directory.
+4. Open `brave://extensions` in Brave or `chrome://extensions` in Chrome.
+5. Enable **Developer mode**.
+6. Click **Load unpacked**.
+7. Select the extracted directory containing `manifest.json`.
+8. Pin **BL Search** to the toolbar and reload any open LinkedIn Jobs tabs.
+
+Do not select the downloaded ZIP itself. Chrome and Brave require an extracted
+directory and load the extension files directly from it. Do not delete or move
+that directory while the extension is installed.
+
+The extracted release has this structure:
+
+```text
+bl-search-extension-v0.3.0/
+├── manifest.json
+├── background.js
+├── content.js
+└── ...
+```
+
+#### Alternative: install from the source repository
+
+This option is intended for development:
 
 ```sh
-git clone https://github.com/<owner>/bl-search.git
+git clone https://github.com/alexander-yatskov/bl-search.git
 cd bl-search
 ```
 
-Replace `<owner>` with the GitHub account or organization that hosts this
-repository.
-
-#### Option 2: Download a ZIP archive
-
-1. Open this repository on GitHub.
-2. Click **Code → Download ZIP**.
-3. Extract the downloaded archive to a permanent directory.
-
-Do not delete or move the extracted directory while the extension is
-installed. Chrome and Brave load the extension directly from it.
-
-#### Load the extension in Brave
-
-1. Open `brave://extensions`.
-2. Enable **Developer mode** in the upper-right corner.
-3. Click **Load unpacked**.
-4. Select the repository's `extension` directory, not the repository root.
-5. Pin **BL Search** to the toolbar if you want quick access to settings.
-6. Open or reload a LinkedIn Jobs search page.
-
-#### Load the extension in Chrome
-
-1. Open `chrome://extensions`.
-2. Enable **Developer mode** in the upper-right corner.
-3. Click **Load unpacked**.
-4. Select the repository's `extension` directory, not the repository root.
-5. Pin **BL Search** to the toolbar if you want quick access to settings.
-6. Open or reload a LinkedIn Jobs search page.
-
-The selected directory must contain `manifest.json`:
-
-```text
-bl-search/
-└── extension/
-    ├── manifest.json
-    ├── background.js
-    ├── content.js
-    └── ...
-```
+Open the browser's extensions page, click **Load unpacked**, and select the
+`extension` directory inside the cloned repository.
 
 ### First run
 
@@ -106,22 +98,24 @@ not receive the plaintext company list or the master secret.
 
 ### Update the beta
 
-If you cloned the repository:
+If you installed from GitHub Releases:
+
+1. Open the
+   [BL Search Releases page](https://github.com/alexander-yatskov/bl-search/releases).
+2. Download and extract the extension ZIP from the newer release.
+3. Replace the files in the directory previously loaded by the browser.
+4. Open `brave://extensions` or `chrome://extensions`.
+5. Click the reload icon for **BL Search**.
+6. Reload any open LinkedIn Jobs tabs.
+
+If you cloned the source repository:
 
 ```sh
 cd /path/to/bl-search
 git pull
 ```
 
-If you downloaded a ZIP archive, download and extract the new version over a
-new permanent directory.
-
-After updating files:
-
-1. Open `brave://extensions` or `chrome://extensions`.
-2. Find **BL Search**.
-3. Click the reload icon.
-4. Reload any open LinkedIn Jobs tabs.
+Then reload the extension and LinkedIn Jobs tabs.
 
 Your local blocklist is stored in browser extension storage and normally
 survives an extension reload. Export or preserve the recovery code before
@@ -175,54 +169,45 @@ Chrome Web Store.
 
 ### Локальная установка бета-версии
 
-#### Вариант 1: клонирование через Git
+#### Рекомендуемый способ: установка из GitHub Releases
+
+1. Открой
+   [релиз BL Search v0.3.0](https://github.com/alexander-yatskov/bl-search/releases/tag/v0.3.0).
+2. Скачай из секции **Assets**
+   [`bl-search-extension-v0.3.0.zip`](https://github.com/alexander-yatskov/bl-search/releases/download/v0.3.0/bl-search-extension-v0.3.0.zip).
+3. Распакуй ZIP в постоянный каталог.
+4. Открой `brave://extensions` в Brave или `chrome://extensions` в Chrome.
+5. Включи **Developer mode**.
+6. Нажми **Load unpacked**.
+7. Выбери распакованный каталог, внутри которого находится `manifest.json`.
+8. Закрепи **BL Search** на панели браузера и перезагрузи открытые вкладки
+   LinkedIn Jobs.
+
+Не выбирай сам ZIP-файл: Chrome и Brave нужен распакованный каталог.
+Не удаляй и не перемещай этот каталог, пока расширение установлено — браузер
+загружает файлы непосредственно из него.
+
+Структура распакованного релиза:
+
+```text
+bl-search-extension-v0.3.0/
+├── manifest.json
+├── background.js
+├── content.js
+└── ...
+```
+
+#### Альтернативный способ: установка из исходного репозитория
+
+Этот вариант предназначен для разработки:
 
 ```sh
-git clone https://github.com/<owner>/bl-search.git
+git clone https://github.com/alexander-yatskov/bl-search.git
 cd bl-search
 ```
 
-Замени `<owner>` на GitHub-аккаунт или организацию, в которой опубликован
-репозиторий.
-
-#### Вариант 2: загрузка ZIP-архива
-
-1. Открой репозиторий на GitHub.
-2. Нажми **Code → Download ZIP**.
-3. Распакуй архив в постоянный каталог.
-
-Не удаляй и не перемещай этот каталог, пока расширение установлено. Chrome и
-Brave загружают файлы расширения непосредственно из него.
-
-#### Установка в Brave
-
-1. Открой `brave://extensions`.
-2. Включи **Developer mode** в правом верхнем углу.
-3. Нажми **Load unpacked**.
-4. Выбери каталог `extension` внутри репозитория, а не корень репозитория.
-5. При желании закрепи **BL Search** на панели браузера для быстрого доступа к
-   настройкам.
-6. Открой или перезагрузи страницу поиска LinkedIn Jobs.
-
-#### Установка в Chrome
-
-1. Открой `chrome://extensions`.
-2. Включи **Developer mode** в правом верхнем углу.
-3. Нажми **Load unpacked**.
-4. Выбери каталог `extension` внутри репозитория, а не корень репозитория.
-5. При желании закрепи **BL Search** на панели браузера.
-6. Открой или перезагрузи страницу поиска LinkedIn Jobs.
-
-В выбранном каталоге должен находиться `manifest.json`:
-
-```text
-bl-search/
-└── extension/
-    ├── manifest.json
-    ├── background.js
-    ├── content.js
-    └── ...
-```
+Открой страницу расширений, нажми **Load unpacked** и выбери каталог
+`extension` внутри клонированного репозитория.
 
 ### Первый запуск
 
@@ -265,22 +250,24 @@ bls1.<vault-id>.<master-secret>
 
 ### Обновление бета-версии
 
-Если репозиторий был клонирован:
+Если расширение установлено из GitHub Releases:
+
+1. Открой
+   [страницу релизов BL Search](https://github.com/alexander-yatskov/bl-search/releases).
+2. Скачай и распакуй ZIP расширения из более нового релиза.
+3. Замени файлы в каталоге, который ранее был выбран в браузере.
+4. Открой `brave://extensions` или `chrome://extensions`.
+5. Нажми кнопку перезагрузки **BL Search**.
+6. Перезагрузи открытые вкладки LinkedIn Jobs.
+
+Если используется клонированный репозиторий:
 
 ```sh
 cd /path/to/bl-search
 git pull
 ```
 
-Если использовался ZIP-архив, скачай новую версию и распакуй её в новый
-постоянный каталог.
-
-После обновления файлов:
-
-1. Открой `brave://extensions` или `chrome://extensions`.
-2. Найди **BL Search**.
-3. Нажми кнопку перезагрузки расширения.
-4. Перезагрузи открытые вкладки LinkedIn Jobs.
+После этого перезагрузи расширение и вкладки LinkedIn Jobs.
 
 Локальный чёрный список хранится в хранилище расширения и обычно сохраняется
 при его перезагрузке. Перед удалением расширения сохрани recovery code.
