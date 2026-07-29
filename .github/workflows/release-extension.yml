@@ -26,31 +26,27 @@ jobs:
           fi
 
       - name: Package extension-only archive
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          mkdir -p dist
-          zip -j -9 "dist/bl-search-extension-${RELEASE_TAG}.zip" \
-            extension/manifest.json \
-            extension/config.js \
-            extension/background.js \
-            extension/storage.js \
-            extension/content.js \
-            extension/content.css \
-            extension/options.html \
-            extension/options.js \
-            extension/options.css \
-            extension/README.md
-          sha256sum "dist/bl-search-extension-${RELEASE_TAG}.zip" \
-            > "dist/bl-search-extension-${RELEASE_TAG}.zip.sha256"
+          archive="$(./scripts/package-extension.sh)"
+          sha256sum "$archive" > "${archive}.sha256"
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release create "${RELEASE_TAG}" \
-            "dist/bl-search-extension-${RELEASE_TAG}.zip" \
-            "dist/bl-search-extension-${RELEASE_TAG}.zip.sha256" \
-            --title "BL Search ${RELEASE_TAG}" \
-            --notes-file ".github/release-notes/${RELEASE_TAG}.md"
+          archive="dist/bl-search-extension-${RELEASE_TAG}-store.zip"
+          notes_file=".github/release-notes/${RELEASE_TAG}.md"
+          if [ -f "${notes_file}" ]; then
+            gh release create "${RELEASE_TAG}" \
+              "${archive}" \
+              "${archive}.sha256" \
+              --title "BL Search ${RELEASE_TAG}" \
+              --notes-file "${notes_file}"
+          else
+            gh release create "${RELEASE_TAG}" \
+              "${archive}" \
+              "${archive}.sha256" \
+              --title "BL Search ${RELEASE_TAG}" \
+              --generate-notes
+          fi

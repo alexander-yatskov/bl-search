@@ -41,9 +41,14 @@
       <section>
         <h2>Encrypted cloud sync</h2>
         <div id="cloud-disconnected">
-          <p class="hint">
-            Sync uses the BL Search cloud service. Browser access to its API is
-            requested only when you create or connect a vault.
+          <p class="disclosure">
+            Cloud sync is optional. When enabled, BL Search encrypts your
+            company blocklist in this browser and sends only the encrypted
+            vault, a random vault identifier, and a derived authentication
+            token to the BL Search API over HTTPS. Job-page content and
+            LinkedIn cookies are never sent. Clicking <strong>Create cloud
+            vault</strong> or <strong>Connect vault</strong> enables this data
+            processing.
           </p>
           <div class="actions">
             <button id="create-vault" type="button">Create cloud vault</button>
@@ -91,6 +96,20 @@
         </div>
       </section>
     </main>
+
+    <footer>
+      <a
+        href="https://github.com/alexander-yatskov/bl-search/blob/main/PRIVACY.md"
+        rel="noreferrer"
+        target="_blank"
+      >Privacy Policy</a>
+      <span aria-hidden="true">·</span>
+      <a
+        href="https://github.com/alexander-yatskov/bl-search/issues"
+        rel="noreferrer"
+        target="_blank"
+      >Support</a>
+    </footer>
 
     <div id="status" role="status" aria-live="polite" hidden></div>
 

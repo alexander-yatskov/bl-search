@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BL Search settings preview</title>
+    <link rel="stylesheet" href="../../extension/options.css">
+    <style>
+      body { padding-top: 24px; }
+      header { margin-bottom: 16px; }
+      section { margin-bottom: 12px; padding: 18px 22px; }
+      .preview-label {
+        background: #e7f3ff;
+        border-radius: 999px;
+        color: #004182;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        position: fixed;
+        right: 24px;
+        top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="preview-label">LOCAL-FIRST</span>
+    <header>
+      <h1>BL Search settings</h1>
+      <p>Manage blocked companies and optional end-to-end encrypted sync.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Search</h2>
+        <label class="checkbox">
+          <input type="checkbox" checked>
+          Group similar postings by normalized company and title
+        </label>
+      </section>
+
+      <section>
+        <h2>Blocked companies</h2>
+        <form>
+          <label for="company-name">Company name</label>
+          <div class="row">
+            <input id="company-name" value="" placeholder="Add a company">
+            <button type="button">Add company</button>
+          </div>
+        </form>
+        <ul>
+          <li><span>Example Outsourcing</span><button class="secondary small" type="button">Remove</button></li>
+          <li><span>Sample Recruiting</span><button class="secondary small" type="button">Remove</button></li>
+          <li><span>Demo Corporation</span><button class="secondary small" type="button">Remove</button></li>
+        </ul>
+        <p class="hint">
+          Removing a company is synchronized too, so another device will not
+          add it back during the next sync.
+        </p>
+      </section>
+
+      <section>
+        <h2>Encrypted cloud sync</h2>
+        <p class="disclosure">
+          Cloud sync is optional. BL Search encrypts the company blocklist in
+          this browser before sending it to the BL Search API. Job-page content
+          and LinkedIn cookies are never sent.
+        </p>
+        <div class="actions">
+          <button type="button">Create cloud vault</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

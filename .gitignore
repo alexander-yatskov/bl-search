@@ -3,6 +3,8 @@ dist/
 bootstrap
 coverage.out
 *.zip
+*.crx
+*.pem
 .DS_Store
 # Created by https://www.toptal.com/developers/gitignore/api/macos,go,sam
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,go,sam

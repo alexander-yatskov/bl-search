@@ -123,6 +123,15 @@ button.small {
   padding: 10px;
 }
 
+.disclosure {
+  background: #edf3f8;
+  border-left: 4px solid #0a66c2;
+  border-radius: 4px;
+  color: #38434f;
+  margin: 12px 0;
+  padding: 12px;
+}
+
 .monospace {
   font-family: ui-monospace, monospace !important;
 }
@@ -180,4 +189,16 @@ dd {
 
 #status.error {
   background: #b24020;
+}
+
+footer {
+  color: #56687a;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+footer a {
+  color: #0a66c2;
 }

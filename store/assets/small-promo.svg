@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280">
+  <defs>
+    <linearGradient id="background" x1="20" y1="20" x2="420" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F2235"/>
+      <stop offset="1" stop-color="#0A66C2"/>
+    </linearGradient>
+    <linearGradient id="icon" x1="42" y1="70" x2="162" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17324D"/>
+      <stop offset="1" stop-color="#0A66C2"/>
+    </linearGradient>
+  </defs>
+  <rect width="440" height="280" fill="url(#background)"/>
+  <circle cx="384" cy="44" r="90" fill="#FFFFFF" opacity=".05"/>
+  <circle cx="420" cy="250" r="130" fill="#FFFFFF" opacity=".04"/>
+  <rect x="42" y="70" width="120" height="120" rx="30" fill="url(#icon)" stroke="#FFFFFF" stroke-opacity=".16"/>
+  <circle cx="93" cy="118" r="27" fill="none" stroke="#FFFFFF" stroke-width="12"/>
+  <path d="M112 137L137 162" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+  <path d="M68 164L136 96" stroke="#FFB49A" stroke-width="11" stroke-linecap="round"/>
+  <text x="194" y="118" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700">BL Search</text>
+  <text x="196" y="151" fill="#D9EAFB" font-family="Arial, Helvetica, sans-serif" font-size="18">Cleaner LinkedIn job search</text>
+  <text x="196" y="184" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="15">Block companies · Group duplicates</text>
+</svg>
