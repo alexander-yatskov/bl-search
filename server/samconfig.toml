@@ -1,0 +1,13 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "bl-search"
+resolve_s3 = true
+s3_prefix = "bl-search"
+region = "eu-central-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "AllowedOrigin=\"*\""
+image_repositories = []
+
+[default.global.parameters]
+region = "eu-central-1"

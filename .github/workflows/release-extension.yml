@@ -1,0 +1,56 @@
+name: Release browser extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify manifest version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          manifest_version="$(jq -r '.version' extension/manifest.json)"
+          if [ "v${manifest_version}" != "${RELEASE_TAG}" ]; then
+            echo "Tag ${RELEASE_TAG} does not match manifest v${manifest_version}"
+            exit 1
+          fi
+
+      - name: Package extension-only archive
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist
+          zip -j -9 "dist/bl-search-extension-${RELEASE_TAG}.zip" \
+            extension/manifest.json \
+            extension/config.js \
+            extension/background.js \
+            extension/storage.js \
+            extension/content.js \
+            extension/content.css \
+            extension/options.html \
+            extension/options.js \
+            extension/options.css \
+            extension/README.md
+          sha256sum "dist/bl-search-extension-${RELEASE_TAG}.zip" \
+            > "dist/bl-search-extension-${RELEASE_TAG}.zip.sha256"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "${RELEASE_TAG}" \
+            "dist/bl-search-extension-${RELEASE_TAG}.zip" \
+            "dist/bl-search-extension-${RELEASE_TAG}.zip.sha256" \
+            --title "BL Search ${RELEASE_TAG}" \
+            --notes-file ".github/release-notes/${RELEASE_TAG}.md"

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BL Search settings</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <header>
+      <h1>BL Search settings</h1>
+      <p>Manage blocked companies and optional end-to-end encrypted sync.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Search</h2>
+        <label class="checkbox">
+          <input id="dedup-enabled" type="checkbox">
+          Group similar postings by normalized company and title
+        </label>
+      </section>
+
+      <section>
+        <h2>Blocked companies</h2>
+        <form id="add-company-form">
+          <label for="company-name">Company name</label>
+          <div class="row">
+            <input id="company-name" autocomplete="organization" required>
+            <button type="submit">Add company</button>
+          </div>
+        </form>
+        <p id="empty-blocklist" class="hint">No blocked companies.</p>
+        <ul id="company-list" aria-live="polite"></ul>
+        <p class="hint">
+          Removing a company is synchronized too, so another device will not
+          add it back during the next sync.
+        </p>
+      </section>
+
+      <section>
+        <h2>Encrypted cloud sync</h2>
+        <div id="cloud-disconnected">
+          <p class="hint">
+            Sync uses the BL Search cloud service. Browser access to its API is
+            requested only when you create or connect a vault.
+          </p>
+          <div class="actions">
+            <button id="create-vault" type="button">Create cloud vault</button>
+          </div>
+          <details>
+            <summary>Connect another device</summary>
+            <label for="recovery-code">Recovery code</label>
+            <input
+              id="recovery-code"
+              class="monospace"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="bls1.vault-id.secret"
+            >
+            <button id="connect-vault" type="button">Connect vault</button>
+          </details>
+        </div>
+
+        <div id="cloud-connected" hidden>
+          <dl>
+            <div><dt>Status</dt><dd>Connected</dd></div>
+            <div><dt>Endpoint</dt><dd id="connected-endpoint"></dd></div>
+            <div><dt>Last sync</dt><dd id="last-sync">Never</dd></div>
+          </dl>
+          <label for="current-recovery-code">Recovery code</label>
+          <div class="row">
+            <input
+              id="current-recovery-code"
+              class="monospace"
+              readonly
+              type="password"
+            >
+            <button id="toggle-recovery-code" class="secondary" type="button">Show</button>
+            <button id="copy-recovery-code" class="secondary" type="button">Copy</button>
+          </div>
+          <p class="warning">
+            Save this code. There is no email recovery and losing it means
+            losing access to the cloud vault.
+          </p>
+          <div class="actions">
+            <button id="sync-now" type="button">Sync now</button>
+            <button id="disconnect-vault" class="danger" type="button">Disconnect this device</button>
+            <button id="delete-vault" class="danger" type="button">Delete cloud vault</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="status" role="status" aria-live="polite" hidden></div>
+
+    <script src="config.js"></script>
+    <script src="storage.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

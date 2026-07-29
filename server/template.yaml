@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Anonymous encrypted vault API for BL Search
+
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Default: "*"
+    Description: Extension origin allowed by API Gateway CORS
+
+Globals:
+  Function:
+    Runtime: provided.al2023
+    Architectures:
+      - arm64
+    MemorySize: 128
+    Timeout: 5
+    Tracing: Active
+
+Resources:
+  VaultsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      AttributeDefinitions:
+        - AttributeName: vault_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: vault_id
+          KeyType: HASH
+
+  VaultAPI:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowMethods:
+          - POST
+          - GET
+          - PUT
+          - DELETE
+        AllowHeaders:
+          - authorization
+          - content-type
+          - if-match
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 20
+        ThrottlingRateLimit: 10
+
+  VaultFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref VaultsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref VaultsTable
+      Events:
+        CreateVault:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref VaultAPI
+            Path: /v1/vaults
+            Method: POST
+        GetVault:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref VaultAPI
+            Path: /v1/vaults/{vaultID}
+            Method: GET
+        UpdateVault:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref VaultAPI
+            Path: /v1/vaults/{vaultID}
+            Method: PUT
+        DeleteVault:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref VaultAPI
+            Path: /v1/vaults/{vaultID}
+            Method: DELETE
+
+  VaultFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${VaultFunction}
+      RetentionInDays: 14
+
+Outputs:
+  APIEndpoint:
+    Description: BL Search vault API endpoint
+    Value: !Sub https://${VaultAPI}.execute-api.${AWS::Region}.${AWS::URLSuffix}

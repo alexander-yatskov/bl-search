@@ -1,0 +1,183 @@
+:root {
+  color-scheme: light;
+  font: 15px/1.5 system-ui, sans-serif;
+}
+
+body {
+  background: #f4f2ee;
+  color: #1d2226;
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 32px 20px 80px;
+}
+
+header {
+  margin-bottom: 24px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+section {
+  background: #fff;
+  border: 1px solid #e0dfdc;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  padding: 22px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+
+.checkbox {
+  font-weight: 400;
+}
+
+input[type="url"],
+input[type="text"],
+input[type="password"],
+input:not([type]) {
+  border: 1px solid #8c8c8c;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font: inherit;
+  min-width: 0;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+button {
+  background: #0a66c2;
+  border: 1px solid #0a66c2;
+  border-radius: 18px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 7px 16px;
+  white-space: nowrap;
+}
+
+button:hover {
+  background: #004182;
+}
+
+button.secondary {
+  background: #fff;
+  color: #0a66c2;
+}
+
+button.secondary:hover {
+  background: #edf3f8;
+}
+
+button.danger {
+  background: #fff;
+  border-color: #b24020;
+  color: #b24020;
+}
+
+button.small {
+  font-size: 13px;
+  padding: 3px 12px;
+}
+
+.row,
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.actions {
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.hint {
+  color: #56687a;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.warning {
+  background: #fff3cd;
+  border-radius: 4px;
+  color: #5c4400;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.monospace {
+  font-family: ui-monospace, monospace !important;
+}
+
+ul {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+}
+
+li {
+  align-items: center;
+  border-bottom: 1px solid #e0dfdc;
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+}
+
+details {
+  border-top: 1px solid #e0dfdc;
+  margin-top: 20px;
+  padding-top: 14px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+dl div {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 100px 1fr;
+}
+
+dt {
+  color: #56687a;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+#status {
+  background: #057642;
+  border-radius: 6px;
+  bottom: 24px;
+  color: white;
+  left: 50%;
+  padding: 10px 16px;
+  position: fixed;
+  transform: translateX(-50%);
+}
+
+#status.error {
+  background: #b24020;
+}

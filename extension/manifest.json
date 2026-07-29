@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "BL Search",
+  "version": "0.3.0",
+  "description": "Hides blocked LinkedIn companies, groups duplicate jobs, and optionally syncs an encrypted blocklist.",
+  "permissions": [
+    "storage"
+  ],
+  "optional_host_permissions": [
+    "https://c418o3x5o5.execute-api.eu-central-1.amazonaws.com/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "BL Search settings"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/*"
+      ],
+      "js": [
+        "config.js",
+        "storage.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html"
+}
