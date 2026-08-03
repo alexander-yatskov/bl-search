@@ -36,7 +36,7 @@
     console.error("BL Search failed to process job cards", error);
   }
 
-  function isJobsPage() {
+  function isJobContentRoute() {
     return location.pathname === "/jobs" ||
       location.pathname.startsWith("/jobs/") ||
       location.pathname === "/preload" ||
@@ -188,7 +188,7 @@
     scheduled = false;
     processingTimerID = null;
 
-    if (!isJobsPage()) {
+    if (!isJobContentRoute()) {
       return;
     }
 
@@ -258,7 +258,7 @@
   }
 
   function scheduleProcessing(force = false) {
-    if (!isJobsPage()) {
+    if (!isJobContentRoute()) {
       return;
     }
     if (scheduled && !force) {
@@ -282,8 +282,8 @@
     blockedCompanies = new Map(Object.entries(stored[STORAGE_KEY]));
 
     // LinkedIn navigates between sections without loading a new document. The
-    // observer stays active outside /jobs so it can catch the first DOM update
-    // after an SPA transition into the jobs section.
+    // observer stays active outside Jobs routes so it can catch the first DOM
+    // update after an SPA transition into the jobs section or preload frame.
     observer = new MutationObserver((mutations) => {
       const hasPageMutation = mutations.some(({ target }) =>
         !target.parentElement?.closest(
@@ -298,7 +298,7 @@
 
     // A LinkedIn route change can happen after its final DOM mutation. Polling
     // the lightweight pathname value makes route detection independent of the
-    // page framework and does not touch page content outside /jobs.
+    // page framework and does not touch page content outside Jobs routes.
     routeMonitorID = window.setInterval(() => {
       if (location.pathname === lastPathname) {
         return;

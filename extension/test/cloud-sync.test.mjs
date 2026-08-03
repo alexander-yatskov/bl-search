@@ -9,8 +9,6 @@ const storageData = {
 const storageListeners = [];
 let messageListener;
 let installedListener;
-const injectedScripts = [];
-const insertedStyles = [];
 const remoteVaults = new Map();
 let context;
 
@@ -31,19 +29,6 @@ const chrome = {
   action: {
     onClicked: {
       addListener() {}
-    }
-  },
-  tabs: {
-    async query() {
-      return [{ id: 42 }];
-    }
-  },
-  scripting: {
-    async executeScript(details) {
-      injectedScripts.push(details);
-    },
-    async insertCSS(details) {
-      insertedStyles.push(details);
     }
   },
   storage: {
@@ -160,15 +145,6 @@ vm.runInContext(
 );
 
 installedListener({ reason: "update" });
-await new Promise((resolve) => setTimeout(resolve, 0));
-assert.deepEqual(structuredClone(insertedStyles), [{
-  target: { tabId: 42, allFrames: true },
-  files: ["content.css"]
-}]);
-assert.deepEqual(structuredClone(injectedScripts), [{
-  target: { tabId: 42, allFrames: true },
-  files: ["config.js", "storage.js", "content.js"]
-}]);
 
 function sendMessage(message) {
   return new Promise((resolve) => {

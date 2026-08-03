@@ -8,27 +8,6 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 let syncInProgress = null;
 
-async function injectIntoOpenLinkedInTabs() {
-  const tabs = await chrome.tabs.query({
-    url: ["https://www.linkedin.com/*"]
-  });
-
-  await Promise.all(tabs.map(async ({ id }) => {
-    if (id === undefined) {
-      return;
-    }
-
-    await chrome.scripting.insertCSS({
-      target: { tabId: id, allFrames: true },
-      files: ["content.css"]
-    });
-    await chrome.scripting.executeScript({
-      target: { tabId: id, allFrames: true },
-      files: ["config.js", "storage.js", "content.js"]
-    });
-  }));
-}
-
 function encodeBase64URL(bytes) {
   let binary = "";
   for (const byte of bytes) {
@@ -311,13 +290,6 @@ chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.runtime.openOptionsPage();
   }
-});
-
-// Static content scripts are not retroactively added to tabs that were already
-// open when an unpacked extension was reloaded. A service worker startup occurs
-// in that workflow, so initialize matching tabs here as well as on installation.
-injectIntoOpenLinkedInTabs().catch((error) => {
-  console.error("BL Search failed to initialize existing tabs", error);
 });
 
 chrome.action.onClicked.addListener(() => {

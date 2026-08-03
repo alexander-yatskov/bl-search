@@ -8,6 +8,10 @@
 - No tests, server source, CRX, PEM, or private keys are included.
 - No remote executable code is loaded.
 - Only production permissions are declared.
+- Required permissions are limited to `storage` and LinkedIn content-script
+  access; the BL Search API origin remains optional.
+- LinkedIn `all_frames` behavior is documented as necessary for the same-origin
+  Jobs preload frame.
 
 ## Developer account
 
@@ -30,6 +34,7 @@
 
 - Single purpose entered exactly as documented.
 - Every permission justified.
+- LinkedIn SPA and `/preload/` frame processing disclosed.
 - Website-content and user-generated-content handling disclosed.
 - Optional encrypted synchronization disclosed.
 - Limited Use certification completed.

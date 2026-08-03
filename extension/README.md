@@ -17,8 +17,10 @@ the user explicitly creates or connects a cloud vault.
 
 When the user clicks **Create cloud vault** or **Connect vault**, Chrome asks
 for permission to contact only the BL Search API origin embedded in
-`config.js`. No network host permission is requested during installation, and
-the user never has to enter an API URL.
+`config.js`. No API host permission is requested during installation, and the
+user never has to enter an API URL. LinkedIn access is granted at installation
+because the local filtering feature runs directly on LinkedIn Jobs pages and
+their same-origin preload frames.
 
 The extension creates a recovery code:
 
@@ -64,7 +66,7 @@ version.
 
 ## Current deduplication rule
 
-Version 0.1 groups postings by:
+The current version groups postings by:
 
 ```text
 normalized company name + normalized job title
@@ -85,3 +87,8 @@ description.
 
 LinkedIn changes its HTML frequently. If no controls appear, inspect a job card
 and update the selectors near the top of `content.js`.
+
+LinkedIn uses client-side navigation and may render Jobs content in a
+same-origin `/preload/` frame. The manifest therefore registers the content
+script for `https://www.linkedin.com/*` with `all_frames`; `content.js` limits
+processing to Jobs and preload routes and reads only detected job cards.

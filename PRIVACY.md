@@ -1,6 +1,6 @@
 # BL Search Privacy Policy
 
-Effective date: July 29, 2026
+Effective date: August 3, 2026
 
 BL Search is an independent browser extension developed by Alexander Yatskov.
 It improves LinkedIn Jobs search results by maintaining a personal company
@@ -81,10 +81,15 @@ BL Search requests only the permissions required for its features:
 
 - `storage` stores the blocklist, preferences, and optional sync
   configuration;
-- access to `https://www.linkedin.com/jobs/*` lets the extension process and
-  update LinkedIn Jobs cards;
+- access to `https://www.linkedin.com/*` lets the extension detect LinkedIn
+  client-side navigation and process job cards rendered in Jobs pages and
+  LinkedIn's same-origin preload frames;
 - optional access to the BL Search API is requested only when cloud sync is
   created or connected.
+
+The content script runs in matching LinkedIn frames so it can handle the
+preload document used by LinkedIn Jobs. It reads only job-card fields needed
+for filtering and grouping; it does not process unrelated page content.
 
 ## Security and recovery
 

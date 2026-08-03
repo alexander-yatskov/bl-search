@@ -83,24 +83,16 @@ Stores the user's company blocklist, removal timestamps, duplicate-grouping
 preference, and optional encrypted-sync configuration in extension storage.
 ```
 
-### `scripting`
-
-```text
-Initializes BL Search in LinkedIn tabs that were already open when the extension
-was installed or updated. Scripts and styles are injected only into matching
-LinkedIn tabs; job-card content is processed only within the /jobs/ section.
-```
-
 ### `https://www.linkedin.com/*`
 
 ```text
 Required to detect client-side navigation into LinkedIn Jobs and to read and
-update job cards displayed there. LinkedIn uses SPA navigation, so the content
-script must be present before the URL changes to /jobs/; it does not process
-page content outside that section. The extension extracts company name, job
-title, location, job URL, and job ID to apply the blocklist and group similar
-cards. This content is processed locally and is not sent to the BL Search
-service.
+update job cards displayed there. LinkedIn uses SPA navigation and renders Jobs
+content in same-origin /preload/ frames, so the content script is registered for
+matching LinkedIn frames before navigation completes. It reads only job-card
+fields: company name, job title, location, job URL, and job ID. These fields are
+processed locally to apply the blocklist and group similar cards and are not
+sent to the BL Search service. Unrelated LinkedIn page content is not processed.
 ```
 
 ### Optional BL Search API host
@@ -154,9 +146,11 @@ encrypted cloud blocklists is not provided.
 ```text
 1. Install the extension and open its options page.
 2. Add "Example Company" under Blocked companies.
-3. Open https://www.linkedin.com/jobs/ while signed in to LinkedIn.
+3. While signed in to LinkedIn, open the home feed and navigate to Jobs using
+   LinkedIn's navigation without reloading the tab.
 4. Search for jobs and confirm that each loaded card has a "Block company"
-   button.
+   button on the first SPA render. LinkedIn may render this list in its internal
+   same-origin /preload/ frame.
 5. Blocking a company hides all currently loaded cards from that company.
 6. Return to extension options and use "Remove" to unblock it.
 7. Similar loaded cards with the same normalized company and title collapse

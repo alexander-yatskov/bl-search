@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
   "name": "BL Search",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Hides blocked LinkedIn companies, groups duplicate jobs, and optionally syncs an encrypted blocklist.",
   "permissions": [
-    "storage",
-    "scripting"
+    "storage"
   ],
   "optional_host_permissions": [
     "https://c418o3x5o5.execute-api.eu-central-1.amazonaws.com/*"

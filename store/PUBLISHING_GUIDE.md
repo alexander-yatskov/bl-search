@@ -11,10 +11,10 @@ From the repository root:
 ./scripts/package-extension.sh
 ```
 
-For version 0.4.0, the upload file is:
+For version 0.4.6, the upload file is:
 
 ```text
-dist/bl-search-extension-v0.4.0-store.zip
+dist/bl-search-extension-v0.4.6-store.zip
 ```
 
 The archive contains only runtime extension files. `manifest.json` is at its
@@ -36,9 +36,9 @@ of a single workstation.
 ## 3. Create the item
 
 1. Select **New item** or **Add new item**.
-2. Upload `dist/bl-search-extension-v0.4.0-store.zip`.
+2. Upload `dist/bl-search-extension-v0.4.6-store.zip`.
 3. Resolve every package validation error before continuing.
-4. Confirm that the Dashboard shows version `0.4.0`.
+4. Confirm that the Dashboard shows version `0.4.6`.
 
 Google's current upload workflow is documented in
 [Publish in the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish).
@@ -64,7 +64,8 @@ Enter the single-purpose statement and permission justifications from
 
 The data declarations must disclose:
 
-- website content processed on LinkedIn Jobs pages;
+- website content processed from job cards on LinkedIn Jobs pages and its
+  same-origin preload frames;
 - user-generated company blocklist data;
 - the recovery secret and derived authentication token used by optional sync;
 - local storage of preferences and sync configuration;
@@ -117,8 +118,9 @@ After publication:
 
 1. Open the Store listing while signed out.
 2. Install the Store build in a clean browser profile.
-3. Verify first-run options, LinkedIn Jobs filtering, company removal, cloud
-   permission request, encrypted synchronization, and cloud-vault deletion.
+3. Verify first-run options, LinkedIn SPA navigation and preload-frame job
+   filtering, company removal, cloud permission request, encrypted
+   synchronization, and cloud-vault deletion.
 4. Verify the privacy-policy and support links.
 5. Record the assigned Chrome Web Store item ID.
 
