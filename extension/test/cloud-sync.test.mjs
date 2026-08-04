@@ -144,6 +144,19 @@ vm.runInContext(
   { filename: "background.js" }
 );
 
+assert.deepEqual(
+  structuredClone(context.validateRecords({
+    acme: { name: " Acme ", blockedAt: 1, removedAt: 0 }
+  })),
+  { acme: { name: "Acme", blockedAt: 1, removedAt: 0 } }
+);
+assert.throws(
+  () => context.validateRecords({
+    acme: { name: "Acme", blockedAt: "yesterday", removedAt: 0 }
+  }),
+  /cloud vault is corrupted/u
+);
+
 installedListener({ reason: "update" });
 
 function sendMessage(message) {

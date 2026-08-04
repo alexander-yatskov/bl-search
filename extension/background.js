@@ -112,10 +112,10 @@ async function decryptRecords(ciphertext, secret) {
     envelope.slice(12)
   );
   const payload = JSON.parse(decoder.decode(plaintext));
-  if (payload.schemaVersion !== 1 || typeof payload.records !== "object") {
+  if (payload.schemaVersion !== 1) {
     throw new Error("Unsupported cloud vault format");
   }
-  return payload.records;
+  return validateRecords(payload.records);
 }
 
 function recoveryCode(config) {
@@ -132,6 +132,29 @@ function parseRecoveryCode(value) {
     throw new Error("Invalid recovery code");
   }
   return { vaultId: parts[1], masterSecret: parts[2] };
+}
+
+function validateRecords(records) {
+  if (!records || Array.isArray(records) || typeof records !== "object") {
+    throw new Error("The cloud vault is corrupted");
+  }
+  const validated = {};
+  for (const [key, record] of Object.entries(records)) {
+    if (!/^[\p{L}\p{N}+#](?:[\p{L}\p{N}+# ]{0,254})$/u.test(key) ||
+        !record || Array.isArray(record) || typeof record !== "object" ||
+        typeof record.name !== "string" || !record.name.trim() ||
+        record.name.length > 255 ||
+        !Number.isSafeInteger(record.blockedAt) || record.blockedAt < 0 ||
+        !Number.isSafeInteger(record.removedAt) || record.removedAt < 0) {
+      throw new Error("The cloud vault is corrupted");
+    }
+    validated[key] = {
+      name: record.name.trim(),
+      blockedAt: record.blockedAt,
+      removedAt: record.removedAt
+    };
+  }
+  return validated;
 }
 
 async function apiRequest(config, method, path, body, revision) {

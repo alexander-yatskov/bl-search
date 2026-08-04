@@ -17,6 +17,7 @@
   ];
 
   let blockedCompanies = new Map();
+  let dedupEnabled = true;
   let observer = null;
   let processingTimerID = null;
   let routeMonitorID = null;
@@ -192,9 +193,6 @@
       return;
     }
 
-    const { dedupEnabled = true } = await chrome.storage.local.get({
-      dedupEnabled: true
-    });
     const cards = new Set();
     document.querySelectorAll(JOB_LINK_SELECTOR).forEach((link) => {
       const card = findCard(link);
@@ -280,6 +278,7 @@
       dedupEnabled: true
     });
     blockedCompanies = new Map(Object.entries(stored[STORAGE_KEY]));
+    dedupEnabled = stored.dedupEnabled;
 
     // LinkedIn navigates between sections without loading a new document. The
     // observer stays active outside Jobs routes so it can catch the first DOM
@@ -315,6 +314,9 @@
         blockedCompanies = new Map(
           Object.entries(changes[STORAGE_KEY].newValue || {})
         );
+      }
+      if (changes.dedupEnabled) {
+        dedupEnabled = changes.dedupEnabled.newValue !== false;
       }
       scheduleProcessing(true);
     });
