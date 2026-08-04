@@ -196,32 +196,33 @@ encrypted cloud blocklists is not provided.
 ```text
 1. Install the extension and open its options page.
 2. Add "Example Company" under Blocked companies.
-3. While signed in to LinkedIn, open the home feed and navigate to Jobs using
-   LinkedIn's navigation without reloading the tab.
-4. Search for jobs and confirm that each loaded card has a "Block company"
-   button on the first SPA render. LinkedIn may render this list in its internal
-   same-origin /preload/ frame.
-5. Blocking a company hides all currently loaded cards from that company.
+3. Without signing in to LinkedIn, open:
+   https://www.linkedin.com/jobs/search/?keywords=software%20engineer
+4. Confirm that each loaded public job card has a "Block company" button.
+5. Click the button on any card and confirm that loaded cards from that company
+   are hidden.
 6. Return to extension options and use "Remove" to unblock it.
 7. Similar loaded cards with the same normalized company and title collapse
    into one card when duplicate grouping is enabled.
-8. Cloud sync is optional. Clicking "Create cloud vault" displays Chrome's
+8. Optional signed-in test: open the LinkedIn home feed and navigate to Jobs
+   without reloading the tab. Confirm that buttons appear after the SPA
+   transition and in LinkedIn's same-origin /preload/ Jobs frame.
+9. Cloud sync is optional. Clicking "Create cloud vault" displays Chrome's
    permission request for the BL Search API, then creates a recovery code.
-9. "Delete cloud vault" removes the encrypted remote vault while preserving
-   the local blocklist.
+10. "Delete cloud vault" removes the encrypted remote vault while preserving
+    the local blocklist.
 
-No test account is provided. LinkedIn page testing requires the reviewer's own
-LinkedIn session. All local settings features can be reviewed without LinkedIn
-authentication.
+No test account is required. Public job-card behavior and all local settings
+can be reviewed without LinkedIn authentication.
 ```
 
 ## Required media
 
 - `store/assets/icon128.png`
 - `store/assets/screenshot-options-1280x800.png`
+- `store/assets/screenshot-linkedin-1280x800.png`
 - `store/assets/small-promo-440x280.png`
 
 Optional:
 
-- `store/assets/screenshot-linkedin-1280x800.png`
 - `store/assets/marquee-1400x560.png`

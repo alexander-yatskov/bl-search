@@ -11,10 +11,10 @@ From the repository root:
 ./scripts/package-extension.sh
 ```
 
-For version 0.4.6, the upload file is:
+For version 0.4.8, the upload file is:
 
 ```text
-dist/bl-search-extension-v0.4.6-store.zip
+dist/bl-search-extension-v0.4.8-store.zip
 ```
 
 The archive contains only runtime extension files. `manifest.json` is at its
@@ -36,9 +36,9 @@ of a single workstation.
 ## 3. Create the item
 
 1. Select **New item** or **Add new item**.
-2. Upload `dist/bl-search-extension-v0.4.6-store.zip`.
+2. Upload `dist/bl-search-extension-v0.4.8-store.zip`.
 3. Resolve every package validation error before continuing.
-4. Confirm that the Dashboard shows version `0.4.6`.
+4. Confirm that the Dashboard shows version `0.4.8`.
 
 Google's current upload workflow is documented in
 [Publish in the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish).
@@ -52,6 +52,7 @@ Upload:
 
 - `store/assets/icon128.png`;
 - `store/assets/screenshot-options-1280x800.png`;
+- `store/assets/screenshot-linkedin-1280x800.png`;
 - `store/assets/small-promo-440x280.png`.
 
 The listing must accurately describe the current extension behavior. It must
@@ -66,7 +67,8 @@ The data declarations must disclose:
 
 - website content processed from job cards on LinkedIn Jobs pages and its
   same-origin preload frames;
-- user-generated company blocklist data;
+- website content and authentication information selected in the current
+  Chrome Web Store data-disclosure form;
 - the recovery secret and derived authentication token used by optional sync;
 - local storage of preferences and sync configuration;
 - optional transmission of encrypted blocklist data to the BL Search API.
@@ -96,9 +98,9 @@ through the Store URL. **Public** makes the listing searchable.
 
 Copy the reviewer test instructions from `STORE_LISTING.md`.
 
-The reviewer needs a LinkedIn session to verify job-card behavior. No BL Search
-account or credentials are required. Local blocklist settings can be reviewed
-without LinkedIn authentication.
+The reviewer can verify public job-card behavior without signing in to LinkedIn.
+No BL Search account or credentials are required. A signed-in LinkedIn session
+can additionally be used to verify SPA navigation and preload-frame behavior.
 
 ## 8. Submit for review
 

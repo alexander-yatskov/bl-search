@@ -27,6 +27,7 @@
 - Homepage, support, and privacy-policy URLs entered.
 - 128×128 icon uploaded.
 - At least one 1280×800 screenshot uploaded.
+- A 1280×800 screenshot visibly demonstrates controls on LinkedIn job cards.
 - 440×280 small promotional image uploaded.
 - Listing text and media accurately reflect current behavior.
 
@@ -35,7 +36,7 @@
 - Single purpose entered exactly as documented.
 - Every permission justified.
 - LinkedIn SPA and `/preload/` frame processing disclosed.
-- Website-content and user-generated-content handling disclosed.
+- Website-content and authentication-information handling disclosed.
 - Optional encrypted synchronization disclosed.
 - Limited Use certification completed.
 - Privacy policy URL is publicly accessible.

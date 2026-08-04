@@ -13,7 +13,8 @@
     "li[data-occludable-job-id]",
     "li.jobs-search-results__list-item",
     ".job-card-container",
-    ".jobs-search-results-list__list-item"
+    ".jobs-search-results-list__list-item",
+    ".base-search-card"
   ];
 
   let blockedCompanies = new Map();
@@ -96,6 +97,7 @@
         ".job-card-list__title--link",
         ".job-card-container__link",
         ".job-card-list__title",
+        ".base-search-card__title",
         "a[href*='/jobs/view/'] strong",
         "a[href*='/jobs/view/']"
       ]);
@@ -103,12 +105,14 @@
       ".artdeco-entity-lockup__subtitle",
       ".job-card-container__primary-description",
       ".job-card-container__company-name",
-      ".job-card-list__company-name"
+      ".job-card-list__company-name",
+      ".base-search-card__subtitle"
     ]);
     const locationName = textFrom(card, [
       ".artdeco-entity-lockup__caption",
       ".job-card-container__metadata-item",
-      ".job-card-container__metadata-wrapper"
+      ".job-card-container__metadata-wrapper",
+      ".job-search-card__location"
     ]);
 
     if (!title || !company) {
