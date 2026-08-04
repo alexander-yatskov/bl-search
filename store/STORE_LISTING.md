@@ -105,32 +105,82 @@ authentication token over HTTPS for synchronization between devices.
 
 ## Data-use declarations
 
-Website content:
+Use the following selections in the current Chrome Web Store data-disclosure
+form.
+
+### Personally identifiable information
+
+```text
+No. BL Search does not request or process the user's name, address, email
+address, age, identification number, LinkedIn profile information, or similar
+identifiers.
+```
+
+### Health information
+
+```text
+No. BL Search does not request or process health or medical information.
+```
+
+### Financial and payment information
+
+```text
+No. BL Search does not request or process transactions, payment details,
+credit information, or financial records.
+```
+
+### Authentication information
+
+```text
+Yes, only for optional BL Search cloud synchronization. The extension generates
+a random recovery secret locally and derives a separate authentication token
+from it. The recovery secret remains in Chrome extension storage; the derived
+token is sent to the BL Search API over HTTPS, where only its hash is stored.
+LinkedIn passwords, cookies, session tokens, and other LinkedIn credentials are
+not accessed.
+```
+
+### Personal communications
+
+```text
+No. BL Search does not request or process emails, text messages, chats, LinkedIn
+messages, or other personal communications.
+```
+
+### Location
+
+```text
+No. BL Search does not determine or collect the user's physical location, IP
+address, GPS coordinates, or nearby-device information. A location written on
+a LinkedIn job card describes the job and is treated as Website content, not as
+the user's location.
+```
+
+### Web history
+
+```text
+No. BL Search does not build or transmit a list of pages visited, page titles,
+or visit times. It reacts only to the currently displayed LinkedIn Jobs page so
+it can provide its user-facing filtering and grouping functionality.
+```
+
+### User activity
+
+```text
+No. BL Search does not monitor clicks, mouse movement, scrolling, keystrokes,
+or network activity. Its own “Block company” controls handle only the clicks
+needed to perform the action requested by the user.
+```
+
+### Website content
 
 ```text
 Yes. Company names, job titles, locations, job URLs, and job IDs are processed
-locally to filter and group LinkedIn Jobs cards.
+locally to filter and group LinkedIn Jobs cards. This job-card content is not
+sent to the BL Search service. Company names explicitly added by the user to
+the blocklist are stored locally and, only when optional cloud sync is enabled,
+sent as end-to-end encrypted ciphertext.
 ```
-
-User-generated content:
-
-```text
-Yes. The personal company blocklist is stored locally and, only when cloud sync
-is enabled, transmitted as end-to-end encrypted ciphertext.
-```
-
-Authentication information:
-
-```text
-The optional sync feature uses a random recovery secret and a derived
-authentication token. LinkedIn authentication information and cookies are not
-accessed.
-```
-
-The extension does not collect personally identifiable information, health
-information, financial information, personal communications, location history,
-or browsing history. It does not track navigation; it processes only the
-content of displayed LinkedIn Jobs pages.
 
 Limited Use certification:
 
