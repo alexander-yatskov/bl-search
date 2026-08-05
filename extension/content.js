@@ -8,11 +8,20 @@
 
   const STORAGE_KEY = BLSearchStorage.BLOCKED_KEY;
   const PROCESSED_ATTRIBUTE = "data-bl-search-processed";
-  const JOB_LINK_SELECTOR = 'a[href*="/jobs/view/"]';
+  const JOB_LINK_SELECTOR = [
+    'a[href*="/jobs/view/"]',
+    'a[href*="currentJobId="]'
+  ].join(", ");
+  const DISMISS_BUTTON_SELECTOR =
+    'button[aria-label^="Dismiss "][aria-label$=" job"]';
   const CARD_SELECTORS = [
     "li[data-occludable-job-id]",
+    "li[data-job-id]",
+    "[data-occludable-job-id]",
+    "[data-entity-urn*='jobPosting']",
     "li.jobs-search-results__list-item",
     ".job-card-container",
+    ".job-card-job-posting-card-wrapper",
     ".jobs-search-results-list__list-item",
     ".base-search-card"
   ];
@@ -23,7 +32,7 @@
   let processingTimerID = null;
   let routeMonitorID = null;
   let scheduled = false;
-  let lastPathname = location.pathname;
+  let lastRoute = currentRoute();
 
   function handleProcessingError(error) {
     if (error?.message?.includes("Extension context invalidated")) {
@@ -43,6 +52,10 @@
       location.pathname.startsWith("/jobs/") ||
       location.pathname === "/preload" ||
       location.pathname.startsWith("/preload/");
+  }
+
+  function currentRoute() {
+    return `${location.pathname}${location.search || ""}`;
   }
 
   function normalize(value) {
@@ -80,40 +93,145 @@
         return card;
       }
     }
-    return link.closest("li") || link.parentElement;
+    const listItem = link.closest("li");
+    if (listItem) {
+      return listItem;
+    }
+    return link.href.includes("/jobs/view/") ? link.parentElement : null;
+  }
+
+  function titleFromDismissButton(button) {
+    return button?.getAttribute("aria-label")
+      ?.replace(/^Dismiss /u, "")
+      .replace(/ job$/u, "")
+      .trim() || "";
+  }
+
+  function meaningfulLines(element) {
+    return (element?.innerText || "")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
+  function hasCardSizedBox(element) {
+    const rectangle = element.getBoundingClientRect();
+    const maxHeight = Math.min(window.innerHeight * 0.8, 600);
+    const scrollHeight = element.scrollHeight || rectangle.height;
+    return rectangle.width >= 200 &&
+      rectangle.height >= 48 &&
+      rectangle.height <= maxHeight &&
+      scrollHeight <= rectangle.height + 100;
+  }
+
+  function findDismissCard(button) {
+    const title = titleFromDismissButton(button);
+    if (!title) {
+      return null;
+    }
+
+    let element = button.parentElement;
+    let candidate = null;
+    while (element && element !== document.body) {
+      const dismissCount = element.querySelectorAll(
+        DISMISS_BUTTON_SELECTOR
+      ).length;
+      if (dismissCount > 1) {
+        break;
+      }
+      const lines = meaningfulLines(element);
+      const textPosting = textPostingFromDismissCard(element, title);
+      if (dismissCount === 1 && lines.some((line) => line === title) &&
+          textPosting.company && hasCardSizedBox(element)) {
+        candidate = element;
+      }
+      element = element.parentElement;
+    }
+    return candidate;
+  }
+
+  function outermostCards(cards) {
+    const result = [];
+    for (const card of cards) {
+      if (result.some((existing) => existing.contains?.(card))) {
+        continue;
+      }
+      for (let index = result.length - 1; index >= 0; index--) {
+        if (card.contains?.(result[index])) {
+          result.splice(index, 1);
+        }
+      }
+      result.push(card);
+    }
+    return result;
+  }
+
+  function textPostingFromDismissCard(card, title) {
+    const lines = meaningfulLines(card);
+    const titleIndex = lines.findIndex((line) => line === title);
+    if (titleIndex < 0) {
+      return { company: "", locationName: "" };
+    }
+    const details = lines.slice(titleIndex + 1).filter((line) =>
+      line !== title &&
+      !line.startsWith("Selected, ") &&
+      !line.startsWith("Posted ") &&
+      !/^\d+ (?:minute|hour|day|week|month)s? ago$/u.test(line)
+    );
+    return {
+      company: details[0] || "",
+      locationName: details[1] || ""
+    };
   }
 
   function extractPosting(card) {
     const link = card.querySelector(JOB_LINK_SELECTOR);
-    if (!link) {
+    const dismissButton = card.querySelector(DISMISS_BUTTON_SELECTOR);
+    if (!link && !dismissButton) {
       return null;
     }
 
-    const url = new URL(link.href, location.origin);
+    const url = new URL(link?.href || location.href, location.origin);
     const idMatch = url.pathname.match(/\/jobs\/view\/(?:[^/]*-)?(\d+)/);
-    const title =
-      link.getAttribute("aria-label")?.trim() ||
+    const id = idMatch?.[1] ||
+      url.searchParams.get("currentJobId") ||
+      card.getAttribute("data-occludable-job-id") ||
+      card.getAttribute("data-job-id") ||
+      card.getAttribute("data-entity-urn")?.match(/jobPosting:(\d+)/u)?.[1] ||
+      "";
+    const dismissTitle = titleFromDismissButton(dismissButton);
+    const title = dismissTitle ||
+      link?.getAttribute("aria-label")?.trim() ||
       textFrom(card, [
         ".job-card-list__title--link",
         ".job-card-container__link",
         ".job-card-list__title",
+        ".job-card-job-posting-card-wrapper__title",
+        ".artdeco-entity-lockup__title",
         ".base-search-card__title",
         "a[href*='/jobs/view/'] strong",
         "a[href*='/jobs/view/']"
       ]);
-    const company = textFrom(card, [
+    let company = textFrom(card, [
       ".artdeco-entity-lockup__subtitle",
       ".job-card-container__primary-description",
       ".job-card-container__company-name",
       ".job-card-list__company-name",
+      ".job-card-job-posting-card-wrapper__company-name",
       ".base-search-card__subtitle"
     ]);
-    const locationName = textFrom(card, [
+    let locationName = textFrom(card, [
       ".artdeco-entity-lockup__caption",
       ".job-card-container__metadata-item",
       ".job-card-container__metadata-wrapper",
       ".job-search-card__location"
     ]);
+
+    if (dismissTitle && (!company || !locationName)) {
+      const textPosting = textPostingFromDismissCard(card, dismissTitle);
+      company ||= textPosting.company;
+      locationName ||= textPosting.locationName;
+    }
 
     if (!title || !company) {
       return null;
@@ -124,7 +242,7 @@
       company,
       companyKey: normalize(company),
       dedupKey: `${normalize(company)}::${normalizeTitle(title)}`,
-      id: idMatch?.[1] || "",
+      id,
       location: locationName,
       title,
       url: url.href
@@ -136,14 +254,21 @@
       return;
     }
 
+    posting.card.classList.add("bl-search-card-host");
     const controls = document.createElement("div");
     controls.className = "bl-search-controls";
 
     const hideButton = document.createElement("button");
     hideButton.className = "bl-search-button";
     hideButton.type = "button";
-    hideButton.textContent = "Block company";
+    hideButton.textContent = "Block";
     hideButton.title = `Hide all loaded jobs from ${posting.company}`;
+
+    const icon = document.createElement("img");
+    icon.alt = "";
+    icon.className = "bl-search-button-icon";
+    icon.src = chrome.runtime.getURL("icons/icon16.png");
+    hideButton.prepend(icon);
     hideButton.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -204,9 +329,15 @@
         cards.add(card);
       }
     });
+    document.querySelectorAll(DISMISS_BUTTON_SELECTOR).forEach((button) => {
+      const card = findDismissCard(button);
+      if (card) {
+        cards.add(card);
+      }
+    });
 
     const postings = [];
-    for (const card of cards) {
+    for (const card of outermostCards(cards)) {
       if (!force && card.getAttribute(PROCESSED_ATTRIBUTE) === "true") {
         const posting = extractPosting(card);
         if (posting) {
@@ -299,14 +430,15 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // A LinkedIn route change can happen after its final DOM mutation. Polling
-    // the lightweight pathname value makes route detection independent of the
-    // page framework and does not touch page content outside Jobs routes.
+    // A LinkedIn route change can happen after its final DOM mutation. Jobs
+    // navigation can change only currentJobId in the query string, so monitor
+    // the complete path and query rather than pathname alone.
     routeMonitorID = window.setInterval(() => {
-      if (location.pathname === lastPathname) {
+      const route = currentRoute();
+      if (route === lastRoute) {
         return;
       }
-      lastPathname = location.pathname;
+      lastRoute = route;
       scheduleProcessing(true);
     }, 250);
 

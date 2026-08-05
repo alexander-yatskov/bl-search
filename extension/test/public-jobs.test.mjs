@@ -8,20 +8,24 @@ const contentScript = await readFile(
   "utf8"
 );
 
-test("adds controls to a public LinkedIn job card on cold start", async () => {
+test("adds controls to a currentJobId search-results card", async () => {
+  const jobLinkSelector = [
+    'a[href*="/jobs/view/"]',
+    'a[href*="currentJobId="]'
+  ].join(", ");
   const classes = new Set(["base-search-card"]);
   let controls = null;
   let blockedName = null;
 
   const values = new Map([
-    [".base-search-card__title", "Back-End Engineer"],
-    [".base-search-card__subtitle", "LotusFlare"],
-    [".job-search-card__location", "Belgrade, Serbia"]
+    [".artdeco-entity-lockup__title", "Python Developer"],
+    [".artdeco-entity-lockup__subtitle", "Example Labs"],
+    [".artdeco-entity-lockup__caption", "Belgrade, Serbia"]
   ]);
   const textElement = (textContent) => ({ textContent });
   const link = {
-    href: "https://rs.linkedin.com/jobs/view/back-end-engineer-at-lotusflare-4416337118",
-    textContent: "Back-End Engineer",
+    href: "https://www.linkedin.com/jobs/search-results/?currentJobId=4434901694",
+    textContent: "Python Developer",
     closest() {
       return card;
     },
@@ -45,7 +49,7 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
       return this.attributes.get(name) || null;
     },
     querySelector(selector) {
-      if (selector === 'a[href*="/jobs/view/"]') return link;
+      if (selector === jobLinkSelector) return link;
       if (selector === ".bl-search-controls") return controls;
       if (selector === ".bl-search-duplicate-summary") return null;
       return values.has(selector) ? textElement(values.get(selector)) : null;
@@ -65,6 +69,7 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
         className: "",
         textContent: "",
         append(...children) { this.children.push(...children); },
+        prepend(...children) { this.children.unshift(...children); },
         addEventListener(type, listener) { this.listeners.set(type, listener); },
         remove() {}
       };
@@ -73,7 +78,7 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
     },
     querySelector() { return null; },
     querySelectorAll(selector) {
-      return selector === 'a[href*="/jobs/view/"]' ? [link] : [];
+      return selector === jobLinkSelector ? [link] : [];
     }
   };
 
@@ -86,6 +91,7 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
     MutationObserver: class { observe() {} },
     URL,
     chrome: {
+      runtime: { getURL: (path) => `chrome-extension://test/${path}` },
       storage: {
         local: { get: async (defaults) => defaults },
         onChanged: { addListener() {} }
@@ -95,7 +101,8 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
     document,
     location: {
       origin: "https://www.linkedin.com",
-      pathname: "/jobs/search/"
+      pathname: "/jobs/search-results/",
+      search: "?currentJobId=4434901694"
     },
     window: {
       clearInterval() {},
@@ -110,7 +117,7 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
 
   assert.ok(controls, "the public card should receive extension controls");
   const button = created.find(({ tagName }) => tagName === "button")?.element;
-  assert.equal(button?.textContent, "Block company");
+  assert.equal(button?.textContent, "Block");
   assert.equal(classes.has("bl-search-hidden"), false);
 
   await button.listeners.get("click")({
@@ -118,6 +125,6 @@ test("adds controls to a public LinkedIn job card on cold start", async () => {
     stopPropagation() {}
   });
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.equal(blockedName, "LotusFlare");
+  assert.equal(blockedName, "Example Labs");
   assert.equal(classes.has("bl-search-hidden"), true);
 });

@@ -63,7 +63,7 @@ The extension works locally by default and does not require an account, email
 address, or cloud connection. You can:
 
 1. Add companies on the settings page.
-2. Click **Block company** on a LinkedIn job card.
+2. Click **Block** on a LinkedIn job card.
 3. Remove a company with the **Remove** button in settings.
 4. Enable or disable duplicate grouping.
 
@@ -212,7 +212,7 @@ cd bl-search
 подключения к облаку. Можно:
 
 1. Добавлять компании на странице настроек.
-2. Нажимать **Block company** на карточках вакансий LinkedIn.
+2. Нажимать **Block** на карточках вакансий LinkedIn.
 3. Убирать компании кнопкой **Remove** в настройках.
 4. Включать и отключать группировку дубликатов.
 

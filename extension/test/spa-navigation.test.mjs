@@ -14,7 +14,8 @@ test("processes jobs rendered in LinkedIn's SPA preload document", async () => {
   let queryCount = 0;
   const location = {
     origin: "https://www.linkedin.com",
-    pathname: "/feed/"
+    pathname: "/feed/",
+    search: ""
   };
 
   const context = {
@@ -70,6 +71,17 @@ test("processes jobs rendered in LinkedIn's SPA preload document", async () => {
   intervalCallback();
   await new Promise((resolve) => setTimeout(resolve, 200));
 
-  assert.equal(queryCount, 1);
+  assert.equal(queryCount, 2);
   assert.equal(typeof mutationCallback, "function");
+
+  location.pathname = "/jobs/search-results/";
+  location.search = "?currentJobId=4402514296";
+  intervalCallback();
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  assert.equal(queryCount, 4);
+
+  location.search = "?currentJobId=4402514297";
+  intervalCallback();
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  assert.equal(queryCount, 6);
 });

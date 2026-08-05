@@ -78,7 +78,7 @@ description.
 
 ## Testing checklist
 
-- A **Block company** button appears on loaded job cards.
+- A compact icon-and-**Block** button appears on loaded job cards.
 - Blocking a company hides all its currently loaded cards.
 - The options page can add and remove blocked companies.
 - Repeated company/title cards collapse into the first card.

@@ -168,7 +168,7 @@ it can provide its user-facing filtering and grouping functionality.
 
 ```text
 No. BL Search does not monitor clicks, mouse movement, scrolling, keystrokes,
-or network activity. Its own “Block company” controls handle only the clicks
+or network activity. Its own “Block” controls handle only the clicks
 needed to perform the action requested by the user.
 ```
 
@@ -198,7 +198,8 @@ encrypted cloud blocklists is not provided.
 2. Add "Example Company" under Blocked companies.
 3. Without signing in to LinkedIn, open:
    https://www.linkedin.com/jobs/search/?keywords=software%20engineer
-4. Confirm that each loaded public job card has a "Block company" button.
+4. Confirm that each loaded public job card has an icon-and-"Block" button in
+   its bottom-right corner.
 5. Click the button on any card and confirm that loaded cards from that company
    are hidden.
 6. Return to extension options and use "Remove" to unblock it.
